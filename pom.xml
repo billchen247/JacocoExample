@@ -54,4 +54,18 @@
 
   	</plugins>
   </build>
+<profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.host.url>
+                  http://172.17.0.3:9000
+                </sonar.host.url>
+		<sonar.projectKey>github-billchen247-JacocoExample</sonar.projectKey>
+            </properties>
+        </profile>
+     </profiles>
 </project>
