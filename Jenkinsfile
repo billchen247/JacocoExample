@@ -71,7 +71,7 @@ pipeline {
         // ------------------------
 
         stage('Build Docker Image') {
-            when { branch 'main' }
+            when { branch 'master' }
             steps {
                 echo "Building Docker image..."
                 sh "docker build -t ${DOCKER_IMAGE} ."
@@ -79,7 +79,7 @@ pipeline {
         }
 
         stage('Push Docker Image (Mock)') {
-            when { branch 'main' }
+            when { branch 'master' }
             steps {
                 echo "Mock pushing Docker image..."
                 echo "docker push ${DOCKER_IMAGE}"
@@ -87,7 +87,7 @@ pipeline {
         }
 
         stage('Deploy to Dev (Mock)') {
-            when { branch 'main' }
+            when { branch 'master' }
             steps {
                 echo "Mock deploy to Kubernetes..."
                 echo "kubectl apply -f k8s/deployment.yaml"
