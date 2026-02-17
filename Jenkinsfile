@@ -47,12 +47,13 @@ pipeline {
             }
             post {
                 always {
-                    jacoco(
-                        execPattern: 'target/jacoco.exec',
-                        classPattern: 'target/classes',
-                        sourcePattern: 'src/main/java',
-                        exclusionPattern: ''
-                    )
+                    node {
+                        jacoco(
+                            execPattern: 'target/jacoco.exec',
+                            classPattern: 'target/classes',
+                            sourcePattern: 'src/main/java'
+                        )
+                    }
                 }
             }
         }
@@ -102,7 +103,9 @@ pipeline {
             echo "Pipeline failed."
         }
         always {
-            cleanWs()
+            node {
+                cleanWs()
+            }
         }
     }
 }
