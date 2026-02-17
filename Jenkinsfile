@@ -1,9 +1,10 @@
 pipeline {
   agent any
+  jacoco
   stages {
     stage('check out') {
       steps {
-        git(url: 'https://github.com/yli202/JacocoExample', branch: 'master')
+        git(url: 'https://github.com/billchen247/JacocoExample', branch: 'master')
       }
     }
 
