@@ -93,12 +93,14 @@ pipeline {
                 echo "kubectl apply -f k8s/deployment.yaml"
             }
         }
-    }
-    stage('Cleanup') {
-        steps {
-            cleanWs()
+
+        stage('Cleanup') {
+            steps {
+                cleanWs()
+            }
         }
     }
+    
 
     post {
         success {
