@@ -45,16 +45,16 @@ pipeline {
                 echo "Generating JaCoCo coverage report..."
                 sh 'mvn jacoco:report'
             }
-            post {
-                always {
-                    node {
-                        jacoco(
-                            execPattern: 'target/jacoco.exec',
-                            classPattern: 'target/classes',
-                            sourcePattern: 'src/main/java'
-                        )
-                    }
-                }
+            
+        }
+
+        stage('Publish Coverage') {
+            steps {
+                jacoco(
+                    execPattern: 'target/jacoco.exec',
+                    classPattern: 'target/classes',
+                    sourcePattern: 'src/main/java'
+                )
             }
         }
 
@@ -103,9 +103,7 @@ pipeline {
             echo "Pipeline failed."
         }
         always {
-            node {
-                cleanWs()
-            }
+            cleanWs()
         }
     }
 }
