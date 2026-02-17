@@ -94,6 +94,11 @@ pipeline {
             }
         }
     }
+    stage('Cleanup') {
+        steps {
+            cleanWs()
+        }
+    }
 
     post {
         success {
@@ -102,9 +107,7 @@ pipeline {
         failure {
             echo "Pipeline failed."
         }
-        always {
-            cleanWs()
-        }
+        
     }
 }
 
