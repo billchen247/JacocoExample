@@ -5,6 +5,13 @@ pipeline {
         maven 'Maven'
         dockerTool 'Docker'
     }
+    parameters {
+        string(
+            name: 'BRANCH_NAME',
+            defaultValue: 'master',
+            description: 'Enter the Git branch to build'
+        )
+    }
 
     environment {
         APP_NAME = "week6demo-app"
@@ -16,7 +23,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo "Checking out source code..."
-                git branch: 'master',
+                echo "Checking out source code from branch: ${params.BRANCH_NAME}"
+
+                git branch: "${params.BRANCH_NAME}",
                     url: 'https://github.com/billchen247/JacocoExample'
             }
         }
