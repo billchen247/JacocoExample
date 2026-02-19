@@ -8,6 +8,7 @@ public class Palindrome {
 	    } else {
 	    	String rev = "";
 	    	int length = inputString.length();
+			// mockup to fix issue #1
 	    	 
 	        for ( int i = length - 1; i >= 0; i-- )
 	           rev = rev + inputString.charAt(i);
