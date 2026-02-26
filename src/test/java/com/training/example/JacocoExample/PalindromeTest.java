@@ -1,4 +1,4 @@
-package com.training.example.JacocoExample;
+package com.training.example.jacocoexample;
 
 import static org.junit.Assert.*;
 

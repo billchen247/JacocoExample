@@ -52,7 +52,7 @@
     <configuration>
         <archive>
             <manifest>
-                <mainClass>com.training.example.JacocoExample.App</mainClass>
+                <mainClass>com.training.example.jacocoexample.App</mainClass>
             </manifest>
         </archive>
     </configuration>

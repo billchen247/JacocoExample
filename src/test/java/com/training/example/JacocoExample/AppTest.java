@@ -1,4 +1,4 @@
-package com.training.example.JacocoExample;
+package com.training.example.jacocoexample;
 
 import org.junit.Test;
 import java.time.LocalTime;
