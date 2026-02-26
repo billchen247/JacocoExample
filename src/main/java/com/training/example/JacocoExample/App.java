@@ -8,9 +8,11 @@ public class App {
     private static final Logger logger = Logger.getLogger(App.class.getName());
     
     public static void main(String[] args) {
-        LocalTime currentTime = LocalTime.now();
-        int hour = currentTime.getHour();
-        
+        displayGreeting(LocalTime.now());
+    }
+
+    public static void displayGreeting(LocalTime time) {
+        int hour = time.getHour();
         String greeting = getGreeting(hour);
         
         logger.info(greeting);

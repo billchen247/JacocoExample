@@ -1,6 +1,7 @@
 package com.training.example.JacocoExample;
 
 import org.junit.Test;
+import java.time.LocalTime;
 import static org.junit.Assert.*;
 
 public class AppTest {
@@ -41,5 +42,36 @@ public class AppTest {
         assertEquals("Good afternoon!", App.getGreeting(12)); // First hour of afternoon
         assertEquals("Good afternoon!", App.getGreeting(16)); // Last hour of afternoon
         assertEquals("Good evening!", App.getGreeting(17)); // First hour of evening
+    }
+    
+    @Test
+    public void testDisplayGreeting_Morning() {
+        // Test displayGreeting with morning time
+        LocalTime morningTime = LocalTime.of(9, 30);
+        App.displayGreeting(morningTime);
+        // Method should execute without exceptions
+    }
+    
+    @Test
+    public void testDisplayGreeting_Afternoon() {
+        // Test displayGreeting with afternoon time
+        LocalTime afternoonTime = LocalTime.of(14, 45);
+        App.displayGreeting(afternoonTime);
+        // Method should execute without exceptions
+    }
+    
+    @Test
+    public void testDisplayGreeting_Evening() {
+        // Test displayGreeting with evening time
+        LocalTime eveningTime = LocalTime.of(20, 15);
+        App.displayGreeting(eveningTime);
+        // Method should execute without exceptions
+    }
+    
+    @Test
+    public void testMain() {
+        // Test main method
+        App.main(new String[]{});
+        // Method should execute without exceptions
     }
 }
