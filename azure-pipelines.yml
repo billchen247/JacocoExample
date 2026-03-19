@@ -25,3 +25,9 @@ steps:
   inputs:
     summaryFileLocation: 'target/site/jacoco/jacoco.xml'
     pathToSources: 'src/main/java/com/training/example/jacocoexample'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'JacocoExample'
+    publishLocation: 'Container'
