@@ -40,14 +40,14 @@ steps:
 
 - task: MavenAuthenticate@0
   inputs:
-    artifactsFeeds: 'sec001demo-agile/training-feed'
+    artifactsFeeds: 'sec001demo-agile/Algebra4_feed'
     
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'clean deploy'
     options: >
-      -DaltDeploymentRepository=azure-artifacts::default::https://pkgs.dev.azure.com/hchen247devopsdemo/sec001demo-agile/_packaging/training-feed/maven/v1
+      -DaltDeploymentRepository=azure-artifacts::default::https://pkgs.dev.azure.com/hchen247devopsdemo/sec001demo-agile/_packaging/Algebra4_feed/maven/v1
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
       
