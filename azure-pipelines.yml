@@ -40,7 +40,7 @@ steps:
 
 - task: MavenAuthenticate@0
   inputs:
-    artifactsFeeds: 'training-feed'
+    artifactsFeeds: 'sec001demo-agile/training-feed'
     
 - task: Maven@3
   inputs:
