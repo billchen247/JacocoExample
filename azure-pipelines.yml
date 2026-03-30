@@ -44,8 +44,10 @@ steps:
     
 - task: Maven@3
   inputs:
+    mavenPomFile: 'pom.xml'
     goals: 'deploy'
     options: >
-      -DaltDeploymentRepository=azure-artifacts::default::
-      https://pkgs.dev.azure.com/hchen247devopsdemo/sec001demo-agile/_packaging/training-feed/maven/v1
+      -DaltDeploymentRepository=azure-artifacts::default::https://pkgs.dev.azure.com/hchen247devopsdemo/sec001demo-agile/_packaging/training-feed/maven/v1
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
       
