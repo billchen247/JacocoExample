@@ -62,7 +62,13 @@
 <distributionManagement>
   <repository>
     <id>azure-artifacts</id>
-    <url>https://pkgs.dev.azure.com/hchen247devopsdemo/_packaging/training-feed/maven/v1</url>
+    <url>https://pkgs.dev.azure.com/hchen247devopsdemo/_packaging/training-feed/Maven/v1</url>
+	<releases>
+     <enabled>true</enabled>
+   </releases>
+   <snapshots>
+     <enabled>true</enabled>
+   </snapshots>
   </repository>
 </distributionManagement>
 </project>
