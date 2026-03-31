@@ -59,4 +59,10 @@
 </plugin>
   	</plugins>
   </build>
+<distributionManagement>
+  <repository>
+    <id>azure-artifacts</id>
+    <url>https://pkgs.dev.azure.com/hchen247devopsdemo/_packaging/training-feed/maven/v1</url>
+  </repository>
+</distributionManagement>
 </project>
