@@ -8,7 +8,7 @@ trigger:
 - master
 
 steps:
-- task: Maven@3
+- task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
@@ -37,3 +37,15 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'JacocoExample'
     publishLocation: 'Container'
+- task: MavenAuthenticate@0
+  inputs:
+    artifactsFeeds: 'training-feed'
+
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'deploy'
+    options: '-DskipTests'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+
