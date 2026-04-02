@@ -48,4 +48,5 @@ steps:
     options: '-DskipTests'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
+    mavenAuthenticateFeed: false # This is key
 
