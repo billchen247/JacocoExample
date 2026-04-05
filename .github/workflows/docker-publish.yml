@@ -64,7 +64,7 @@ jobs:
         run: mvn sonar:sonar \
           -Dsonar.projectKey=jacoco-example \
           -Dsonar.organization=billchen247 \
-          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.host.url="https://sonarcloud.io" \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
   
       # ✅ Upload JAR artifact
