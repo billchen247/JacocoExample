@@ -55,9 +55,32 @@ jobs:
           distribution: 'temurin'
           cache: maven
         
-      - name: Build with Maven Wrapper
-        run: mvn -B verify
-        
+      # ✅ Build + Test + JaCoCo
+      - name: Build with Maven
+        run: mvn clean verify
+  
+      # ✅ Sonar Scan
+      - name: SonarQube Scan
+        run: mvn sonar:sonar -Dsonar.projectKey=JacocoExample -Dsonar.organization=billchen247 -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+  
+      # ✅ Upload JAR artifact
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: target/*.jar
+  
+      # ✅ Upload JaCoCo report
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+  
+      # -----------------------------
+      # 🐳 Docker part 
+      # -----------------------------
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
       # https://github.com/docker/setup-buildx-action
