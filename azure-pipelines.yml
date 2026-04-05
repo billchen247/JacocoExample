@@ -20,6 +20,7 @@ steps:
     scannerMode: 'Other'
     
 - task: Maven@4
+  displayName: 'Maven Build + SonarQube Analysis'
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
@@ -27,6 +28,8 @@ steps:
     jdkVersionOption: '1.17'
     jdkArchitectureOption: 'x64'
     goals: 'clean verify sonar:sonar'
+    sonarQubeRunAnalysis: true  # this enables Sonar scan
+    options: '-X -Dproject.settings=sonar-project.properties'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     
