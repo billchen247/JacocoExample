@@ -6,21 +6,40 @@
 
 trigger:
 - master
+- azure_devops_with_sonarqube_scan
+
+
 
 steps:
+
+# 🔹 1. Prepare SonarCloud
+- task: SonarCloudPrepare@4
+  inputs:
+    SonarCloud: 'sonarqubecloud'   # 👈 your service connection name
+    organization: 'billchen247'   # 👈 SonarCloud org (IMPORTANT)
+    scannerMode: 'Other'
+    
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
+    jdkVersionOption: '1.17'
     jdkArchitectureOption: 'x64'
-    goals: 'package'
-
+    goals: 'clean verify sonar:sonar'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    
+# 🔹 3. Publish SonarCloud Result
+- task: SonarCloudPublish@4
+  inputs:
+    pollingTimeoutSec: '300'
+    
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/target/surefire-reports/*.xml'
+    
 - task: PublishCodeCoverageResults@2
   inputs:
     summaryFileLocation: 'target/site/jacoco/jacoco.xml'
