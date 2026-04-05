@@ -13,10 +13,10 @@ trigger:
 steps:
 
 # 🔹 1. Prepare SonarCloud
-- task: SonarCloudPrepare@1
+- task: SonarCloudPrepare@4
   inputs:
     SonarCloud: 'sonarqubecloud'   # 👈 your service connection name
-    organization: 'your-org-key'   # 👈 SonarCloud org (IMPORTANT)
+    organization: 'billchen247'   # 👈 SonarCloud org (IMPORTANT)
     scannerMode: 'Other'
     
 - task: Maven@4
@@ -31,7 +31,7 @@ steps:
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     
 # 🔹 3. Publish SonarCloud Result
-- task: SonarCloudPublish@1
+- task: SonarCloudPublish@4
   inputs:
     pollingTimeoutSec: '300'
     
