@@ -130,6 +130,11 @@ stages:
               mkdir -p $(Build.ArtifactStagingDirectory)/package
               cp "$JAR" $(Build.ArtifactStagingDirectory)/package/app.jar
               echo "✅ Created deployment packge $(Build.ArtifactStagingDirectory)/package/app.jar"
+              ls -l $(Build.ArtifactStagingDirectory)
+              if [ ! -f "$(Build.ArtifactStagingDirectory)/package/app.jar" ]; then
+                echo "❌ JAR copy failed!"
+                exit 1
+              fi
             displayName: "Validate JAR exists"
           
           - task: ArchiveFiles@2
@@ -141,6 +146,13 @@ stages:
               archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
               replaceExistingArchive: true
 
+          - script: |
+              echo "=== ZIP CONTENT ==="
+              ls -l $(Build.ArtifactStagingDirectory)/app.zip
+              unzip -l $(Build.ArtifactStagingDirectory)/app.zip
+              
+            displayName: "Verify ZIP"
+            
  #         - task: AzureCLI@2
  #           inputs:
  #             azureSubscription: 'azure-conn'
