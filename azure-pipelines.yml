@@ -127,13 +127,10 @@ stages:
                 exit 1
               fi
               echo "✅ Found JAR: $JAR"
-            displayName: "Validate JAR exists"
-
-          - script: |
-              echo "Creating deployment package..."
               mkdir -p $(Build.ArtifactStagingDirectory)/package
-              cp target/*.jar $(Build.ArtifactStagingDirectory)/package/app.jar
-            displayName: "Prepare JAR"
+              cp "$JAR" $(Build.ArtifactStagingDirectory)/package/app.jar
+              echo "✅ Created deployment packge $(Build.ArtifactStagingDirectory)/package/app.jar"
+            displayName: "Validate JAR exists"
           
           - task: ArchiveFiles@2
             displayName: "Create ZIP package"
