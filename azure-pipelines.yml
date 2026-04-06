@@ -173,11 +173,42 @@ stages:
               fi
             displayName: "Check publishProfile variable"
 
+
+          - script: |
+              echo "=== CURRENT DIR ==="
+              pwd
+          
+              echo "=== LIST ROOT ==="
+              ls -al
+          
+              echo "=== LIST WORKSPACE ==="
+              ls -al $(Pipeline.Workspace)
+          
+              echo "=== RECURSIVE LIST ==="
+              ls -R $(Pipeline.Workspace)
+          
+              echo "=== FIND ZIP ==="
+              find $(Pipeline.Workspace) -name "*.zip"
+          
+              FILE=$(find $(Pipeline.Workspace) -name "*.zip" | head -n 1)
+          
+              if [ -z "$FILE" ]; then
+                echo "❌ NO ZIP FOUND"
+                exit 1
+              fi
+          
+              echo "✅ ZIP FOUND: $FILE"
+              ls -l "$FILE"
+          
+              echo "=== TRY UNZIP ==="
+              unzip -l "$FILE" || echo "⚠️ unzip failed"
+            displayName: "FULL DEBUG ZIP"
+
           # Deploy to Azure Web App
           - task: AzureWebApp@1
             displayName: "Deploy to Web App"
             inputs:
-              appType: 'webApp'
+              #appType: 'webApp'
               # publishProfile: '$(publishProfile)' # for publish profile
               azureSubscription: 'azure-conn'   # <-- CHANGE THIS # for service connection
               appName: 'jdk17webapp'     # <-- CHANGE THIS
