@@ -144,4 +144,5 @@ stages:
               azureSubscription: 'azure-conn'   # <-- CHANGE THIS # for service connection
               appName: 'jdk17webapp'     # <-- CHANGE THIS
               package: '$(Pipeline.Workspace)/$(artifactName)/**/*.jar'
+              deploymentMethod: 'runFromPackage'
               
