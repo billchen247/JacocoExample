@@ -8,64 +8,139 @@ trigger:
 - master
 - azure_devops_with_sonarqube_scan
 
+variables:
+  artifactName: 'JacocoExample'
+  javaVersion: '1.17'
 
+stages:
 
-steps:
-
-# 🔹 1. Prepare SonarCloud
-- task: SonarCloudPrepare@4
-  inputs:
-    SonarCloud: 'sonarqubecloud'   # 👈 your service connection name
-    organization: 'billchen247'   # 👈 SonarCloud org (IMPORTANT)
-    scannerMode: 'Other'
+# =========================
+# BUILD STAGE
+# =========================
+- stage: Build
+  displayName: "Build Stage"
+  jobs:
+  - job: BuildJob
+    displayName: "Build and Package"
+    steps:
+    # 🔹 1. Prepare SonarCloud
+    - task: SonarCloudPrepare@4
+      inputs:
+        SonarCloud: 'sonarqubecloud'   # 👈 your service connection name
+        organization: 'billchen247'   # 👈 SonarCloud org (IMPORTANT)
+        scannerMode: 'Other'
+        
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        mavenOptions: '-Xmx3072m'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.17'
+        jdkArchitectureOption: 'x64'
+        goals: 'clean verify sonar:sonar'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        
+    # 🔹 3. Publish SonarCloud Result
+    - task: SonarCloudPublish@4
+      inputs:
+        pollingTimeoutSec: '300'
+        
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/target/surefire-reports/*.xml'
+        
+    - task: PublishCodeCoverageResults@2
+      inputs:
+        summaryFileLocation: 'target/site/jacoco/jacoco.xml'
+        pathToSources: 'src/main/java/com/training/example/jacocoexample'
     
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.17'
-    jdkArchitectureOption: 'x64'
-    goals: 'clean verify sonar:sonar'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/target'
+        Contents: '**/*.jar'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'JacocoExample'
+        publishLocation: 'Container'
+    - task: MavenAuthenticate@0
+      inputs:
+        artifactsFeeds: 'training-feed'
     
-# 🔹 3. Publish SonarCloud Result
-- task: SonarCloudPublish@4
-  inputs:
-    pollingTimeoutSec: '300'
-    
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/target/surefire-reports/*.xml'
-    
-- task: PublishCodeCoverageResults@2
-  inputs:
-    summaryFileLocation: 'target/site/jacoco/jacoco.xml'
-    pathToSources: 'src/main/java/com/training/example/jacocoexample'
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        goals: 'deploy'
+        options: '-DskipTests'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.11'
+        mavenAuthenticateFeed: false # This is key
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/target'
-    Contents: '**/*.jar'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'JacocoExample'
-    publishLocation: 'Container'
-- task: MavenAuthenticate@0
-  inputs:
-    artifactsFeeds: 'training-feed'
+    - task: PublishPipelineArtifact@1
+      displayName: "Publish Pipeline Artifact for CD pipeline"
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: '$(artifactName)'
 
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'deploy'
-    options: '-DskipTests'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    mavenAuthenticateFeed: false # This is key
+# =========================
+# DEPLOY STAGE
+# =========================
+- stage: Deploy
+  displayName: "Deploy to Azure Web App"
+  dependsOn: Build
+  condition: succeeded()
+  variables:
+    - group: jdk17webapp_var_group
+  jobs:
+  - deployment: DeployWebApp
+    displayName: "Deploy to Azure"
+    environment: 'dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
 
+          # Download artifact
+          - download: current
+            artifact: $(artifactName)
+
+          # Debug downloaded files
+          - script: |
+              echo "=== Pipeline Workspace ==="
+              ls -R $(Pipeline.Workspace)
+            displayName: "Debug Downloaded Artifact"
+
+ #         - task: AzureCLI@2
+ #           inputs:
+ #             azureSubscription: 'azure-conn'
+ #             scriptType: 'bash'
+ #             scriptLocation: 'inlineScript'
+ #             inlineScript: |
+ #               echo "Logged in identity:"
+ #               az account show
+
+          
+
+          - script: |
+              if [ -z "$(publishProfile)" ]; then
+                echo "❌ publishProfile is EMPTY"
+                exit 1
+              else
+                echo "✅ publishProfile is loaded"
+              fi
+            displayName: "Check publishProfile variable"
+
+          # Deploy to Azure Web App
+          - task: AzureWebApp@1
+            displayName: "Deploy to Web App"
+            inputs:
+              appType: 'webApp'
+              # publishProfile: '$(publishProfile)' # for publish profile
+              azureSubscription: 'azure-conn'   # <-- CHANGE THIS # for service connection
+              appName: 'jdk17webapp'     # <-- CHANGE THIS
+              package: '$(Pipeline.Workspace)/$(artifactName)/**/*.jar'
+              
